@@ -7,7 +7,8 @@ DATE_STRING_CUTOFF = 20
 DATE_STRING_CONTINUE = 23
 INPUT_VALUE_DELIMITER = '" = '
 OUTPUT_VALUE_DELIMITER = ','
-SEGMENT_SIZE = 8
+SEGMENT_START = 1
+SEGMENT_END = 8
 
 DATE = "Date"
 DESIGN_CYCLE_COUNT_70 = "DesignCycleCount70"
@@ -51,9 +52,10 @@ print(OUTPUT_VALUE_DELIMITER.join(SEGMENTS))
 segmentLineCount = 1
 
 for lineNumber, line in enumerate(dataLines):
-    if segmentLineCount == SEGMENTS[DATE]:
+    if segmentLineCount == SEGMENT_START:
         row = []
 
+    if segmentLineCount == SEGMENTS[DATE]:
         try:
             row.append(str(
                 datetime.datetime.strptime(line[:DATE_STRING_CUTOFF] + line[DATE_STRING_CONTINUE:], DATE_FORMAT)
@@ -64,27 +66,43 @@ for lineNumber, line in enumerate(dataLines):
             sys.exit(2)
 
     elif segmentLineCount == SEGMENTS[DESIGN_CYCLE_COUNT_70]:
-        row.append(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])
+        try:
+            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
+        except ValueError:
+            segmentLineCount = SEGMENT_START
 
     elif segmentLineCount == SEGMENTS[CYCLE_COUNT]:
-        row.append(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])
+        try:
+            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
+        except ValueError:
+            segmentLineCount = SEGMENT_START
 
     elif segmentLineCount == SEGMENTS[DESIGN_CYCLE_COUNT_9C]:
-        row.append(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])
+        try:
+            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
+        except ValueError:
+            segmentLineCount = SEGMENT_START
 
     elif segmentLineCount == SEGMENTS[MAXIMUM_CAPACITY]:
-        row.append(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])
+        try:
+            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
+        except ValueError:
+            segmentLineCount = SEGMENT_START
 
     elif segmentLineCount == SEGMENTS[CURRENT_CAPACITY]:
-        row.append(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])
+        try:
+            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
+        except ValueError:
+            segmentLineCount = SEGMENT_START
 
     elif segmentLineCount == SEGMENTS[DESIGN_CAPACITY]:
-        row.append(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])
+        try:
+            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
+        except ValueError:
+            segmentLineCount = SEGMENT_START
 
-    # Increment segment line counter
-    segmentLineCount += 1
-
-    # Print row and reset segment line counter if end of segment is reached
-    if segmentLineCount % (SEGMENT_SIZE + 1) == 0:
+    if segmentLineCount == SEGMENT_END:
         print(OUTPUT_VALUE_DELIMITER.join(row))
-        segmentLineCount = 1
+        segmentLineCount = SEGMENT_START
+    else:
+        segmentLineCount += SEGMENT_START
