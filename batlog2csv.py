@@ -1,32 +1,26 @@
-import sys
-from collections import OrderedDict
 import datetime
+import sys
 
 DATE_FORMAT = "%a %b %d %H:%M:%S %Y"
 DATE_STRING_CUTOFF = 20
 DATE_STRING_CONTINUE = 23
+INPUT_KEY_DELIMITER = '"'
 INPUT_VALUE_DELIMITER = '" = '
 OUTPUT_VALUE_DELIMITER = ','
-SEGMENT_START = 1
-SEGMENT_END = 8
 
-DATE = "Date"
-DESIGN_CYCLE_COUNT_70 = "DesignCycleCount70"
-CYCLE_COUNT = "CycleCount"
-DESIGN_CYCLE_COUNT_9C = "DesignCycleCount9C"
-MAXIMUM_CAPACITY = "MaxCapacity"
-CURRENT_CAPACITY = "CurrentCapacity"
-DESIGN_CAPACITY = "DesignCapacity"
+DATE_KEY = "Date"
+CYCLE_COUNT_KEY = "CycleCount"
+MAXIMUM_CAPACITY_KEY = "MaxCapacity"
+CURRENT_CAPACITY_KEY = "CurrentCapacity"
+DESIGN_CAPACITY_KEY = "DesignCapacity"
 
-SEGMENTS = OrderedDict([
-    (DATE, 1),
-    (DESIGN_CYCLE_COUNT_70, 2),
-    (CYCLE_COUNT, 3),
-    (DESIGN_CYCLE_COUNT_9C, 4),
-    (MAXIMUM_CAPACITY, 5),
-    (CURRENT_CAPACITY, 6),
-    (DESIGN_CAPACITY, 8)
-])
+DESIRED_COLUMNS = [
+    DATE_KEY,
+    CYCLE_COUNT_KEY,
+    MAXIMUM_CAPACITY_KEY,
+    CURRENT_CAPACITY_KEY,
+    DESIGN_CAPACITY_KEY
+]
 
 # Get the input file name from the provided arguments
 try:
@@ -44,65 +38,56 @@ except IOError:
     print "The input file does not exist"
     sys.exit(2)
 
-# Print the header
-print(OUTPUT_VALUE_DELIMITER.join(SEGMENTS))
-
 # Parse the input data
-# It expects sections of 8 lines, starting with a data, followed by seven key / pair values, each on a new line
-segmentLineCount = 1
+rowCount = 0
+header = []
+row = []
+numberOfColumns = 0
 
 for lineNumber, line in enumerate(dataLines):
-    if segmentLineCount == SEGMENT_START:
-        row = []
+    value = None
+    date = False
 
-    if segmentLineCount == SEGMENTS[DATE]:
-        try:
-            row.append(str(
-                datetime.datetime.strptime(line[:DATE_STRING_CUTOFF] + line[DATE_STRING_CONTINUE:], DATE_FORMAT)
-            ))
-        except ValueError, e:
-            print("Could not parse date from string '" + line + "' on line " + str(lineNumber + 1))
-            print("Cause: " + e.message)
-            sys.exit(2)
+    # Get the key
+    key = line[line.find(INPUT_KEY_DELIMITER) + len(INPUT_KEY_DELIMITER):line.find(INPUT_VALUE_DELIMITER)]
 
-    elif segmentLineCount == SEGMENTS[DESIGN_CYCLE_COUNT_70]:
-        try:
-            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
-        except ValueError:
-            segmentLineCount = SEGMENT_START
+    # Add the value if key is desired
+    if key in DESIRED_COLUMNS:
+        value = line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):]
 
-    elif segmentLineCount == SEGMENTS[CYCLE_COUNT]:
-        try:
-            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
-        except ValueError:
-            segmentLineCount = SEGMENT_START
-
-    elif segmentLineCount == SEGMENTS[DESIGN_CYCLE_COUNT_9C]:
-        try:
-            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
-        except ValueError:
-            segmentLineCount = SEGMENT_START
-
-    elif segmentLineCount == SEGMENTS[MAXIMUM_CAPACITY]:
-        try:
-            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
-        except ValueError:
-            segmentLineCount = SEGMENT_START
-
-    elif segmentLineCount == SEGMENTS[CURRENT_CAPACITY]:
-        try:
-            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
-        except ValueError:
-            segmentLineCount = SEGMENT_START
-
-    elif segmentLineCount == SEGMENTS[DESIGN_CAPACITY]:
-        try:
-            row.append(str(int(line[line.find(INPUT_VALUE_DELIMITER) + len(INPUT_VALUE_DELIMITER):])))
-        except ValueError:
-            segmentLineCount = SEGMENT_START
-
-    if segmentLineCount == SEGMENT_END:
-        print(OUTPUT_VALUE_DELIMITER.join(row))
-        segmentLineCount = SEGMENT_START
+    # Try to get a date if key is not desired
     else:
-        segmentLineCount += SEGMENT_START
+        try:
+            value = str(datetime.datetime.strptime(line[:DATE_STRING_CUTOFF] + line[DATE_STRING_CONTINUE:], DATE_FORMAT))
+            key = DATE_KEY
+            date = True
+        except:
+            pass
+
+    # Add value to row
+    if value:
+        # New row
+        if date and row:
+            # Print header
+            if rowCount == 0:
+                numberOfColumns = len(row)
+                print OUTPUT_VALUE_DELIMITER.join(header)
+
+            # Print row if it has the correct number of columns
+            if len(row) == numberOfColumns:
+                print OUTPUT_VALUE_DELIMITER.join(row)
+
+            # Start a new row
+            row = []
+            rowCount += 1
+
+        # Append column name to header
+        if rowCount == 0:
+            header.append(key)
+
+        # Append value to row
+        row.append(value)
+
+# Print the last row
+if len(row) == numberOfColumns:
+    print OUTPUT_VALUE_DELIMITER.join(row)
