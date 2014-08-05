@@ -52,5 +52,9 @@ Date,CycleCount,MaxCapacity,CurrentCapacity,DesignCapacity
 2012-08-14 10:43:00,1,6667,6308,6700
 ```
 
+## License
+
+Apache License, Version 2.0, see `LICENSE.md`.
+
 [1]: https://github.com/jradavenport/batlog
 [2]: https://www.python.org/download/
