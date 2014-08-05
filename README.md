@@ -52,6 +52,12 @@ Date,CycleCount,MaxCapacity,CurrentCapacity,DesignCapacity
 2012-08-14 10:43:00,1,6667,6308,6700
 ```
 
+## Visualizing data
+ 
+You can generate a graph of your log by dropping the CSV in the [batlog chart generator][3]. This will generate a chart that looks like this:
+
+![example graph](http://pietvandongen.github.io/batlog-d3-chart/images/example.png)
+
 ## License
 
 Apache License, Version 2.0, see `LICENSE.md`.
