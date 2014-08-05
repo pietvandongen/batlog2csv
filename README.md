@@ -64,3 +64,4 @@ Apache License, Version 2.0, see `LICENSE.md`.
 
 [1]: https://github.com/jradavenport/batlog
 [2]: https://www.python.org/download/
+[3]: http://pietvandongen.github.io/batlog-d3-chart/
