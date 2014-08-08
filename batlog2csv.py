@@ -27,7 +27,7 @@ class Batlog2Csv:
         self.dataLines = data_lines
 
     def convert(self):
-        # Parse the input data
+        csv = ""
         rowcount = 0
         column_count = 0
         header = []
@@ -57,11 +57,11 @@ class Batlog2Csv:
                     # Print header
                     if rowcount == 0:
                         number_of_columns = len(header)
-                        print self.OUTPUT_VALUE_DELIMITER.join(header)
+                        csv += self.OUTPUT_VALUE_DELIMITER.join(header) + "\n"
 
                     # Print row if it has the correct number of columns
                     if len(row) == number_of_columns:
-                        print self.OUTPUT_VALUE_DELIMITER.join(row)
+                        csv += self.OUTPUT_VALUE_DELIMITER.join(row) + "\n"
 
                     # Start a new row
                     row = []
@@ -85,9 +85,11 @@ class Batlog2Csv:
 
                 column_count += 1
 
-        # Print the last row
+        # Add the last row
         if len(row) == number_of_columns:
-            print self.OUTPUT_VALUE_DELIMITER.join(row)
+            csv += self.OUTPUT_VALUE_DELIMITER.join(row) + "\n"
+
+        return csv
 
     @staticmethod
     def parse_date(string):
@@ -146,7 +148,7 @@ def main():
 
     batlog2csv = Batlog2Csv(date_lines)
 
-    batlog2csv.convert()
+    print batlog2csv.convert()
 
 
 if __name__ == "__main__": main()
