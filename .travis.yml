@@ -3,6 +3,7 @@ python:
   - "2.7"
 install:
   - pip install nose
+  - pip install coveralls
 script: nosetests --with-coverage --cover-package=batlog2csv
 after_success:
   coveralls
