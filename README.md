@@ -5,7 +5,7 @@ Convert [batlog][1] data files into comma separated files.
 ## Requirements
 
 - A [Python][2] installation.
-- A batlog data file (see `example.dat` for an example data file).
+- A batlog data file (see `test/data/default.dat` for an example data file).
 
 ## Usage
 
