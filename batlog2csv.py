@@ -79,6 +79,7 @@ except IOError:
 
 # Parse the input data
 rowCount = 0
+columnCount = 0
 header = []
 row = []
 numberOfColumns = 0
@@ -104,7 +105,7 @@ for lineNumber, line in enumerate(dataLines):
         if isDate and row:
             # Print header
             if rowCount == 0:
-                numberOfColumns = len(row)
+                numberOfColumns = len(header)
                 print OUTPUT_VALUE_DELIMITER.join(header)
 
             # Print row if it has the correct number of columns
@@ -114,6 +115,7 @@ for lineNumber, line in enumerate(dataLines):
             # Start a new row
             row = []
             rowCount += 1
+            columnCount = 0
 
         # Append column name to header
         if rowCount == 0:
@@ -127,7 +129,10 @@ for lineNumber, line in enumerate(dataLines):
                 value = "false"
 
         # Append value to row
-        row.append(str(value))
+        if columnCount < len(header) and key == header[columnCount]:
+            row.append(str(value))
+
+        columnCount += 1
 
 # Print the last row
 if len(row) == numberOfColumns:
