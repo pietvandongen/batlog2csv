@@ -1,4 +1,8 @@
 language: python
 python:
   - "2.7"
-script: nosetests
+install:
+  - pip install nose
+script: nosetests --with-coverage --cover-package=batlog2csv
+after_success:
+  coveralls
