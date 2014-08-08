@@ -1,5 +1,7 @@
 # batlog2csv
 
+[![Build Status](https://travis-ci.org/pietvandongen/batlog2csv.svg?branch=master)](https://travis-ci.org/pietvandongen/batlog2csv) [![Coverage Status](https://img.shields.io/coveralls/pietvandongen/batlog2csv.svg)](https://coveralls.io/r/pietvandongen/batlog2csv)
+
 Convert [batlog][1] data files into comma separated files.
 
 ## Requirements
