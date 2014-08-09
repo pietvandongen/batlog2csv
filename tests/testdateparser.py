@@ -1,5 +1,3 @@
-import unittest
-
 from batlog2csv import Batlog2Csv
 
 
