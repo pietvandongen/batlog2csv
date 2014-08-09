@@ -45,5 +45,4 @@ def check_header(header):
 
 def get_csv(file_path):
     with open(file_path) as data_file:
-        return csv.reader(Batlog2Csv(
-            data_file.read().splitlines()).convert().strip().split("\n"))
+        return csv.reader(Batlog2Csv( data_file.read().splitlines()).convert().strip().split("\n"))
