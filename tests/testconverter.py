@@ -4,6 +4,7 @@ from os.path import dirname, abspath
 
 from batlog2csv import Batlog2Csv
 
+
 baseDir = dirname(abspath(__file__)) + os.path.sep
 
 
@@ -45,4 +46,4 @@ def check_header(header):
 
 def get_csv(file_path):
     with open(file_path) as data_file:
-        return csv.reader(Batlog2Csv( data_file.read().splitlines()).convert().strip().split("\n"))
+        return csv.reader(Batlog2Csv(data_file.read().splitlines()).convert().strip().split("\n"))

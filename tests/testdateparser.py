@@ -20,6 +20,7 @@ def test_that_standard_date_is_parsed_correctly():
     assert parsed_date.minute == minute
     assert parsed_date.second == second
 
+
 def test_that_date_with_timezone_as_last_part_is_parsed_correctly():
     date_string = "Fri 16 Aug 2013 21:47:02 BST"
     year = 2013
@@ -38,6 +39,7 @@ def test_that_date_with_timezone_as_last_part_is_parsed_correctly():
     assert parsed_date.hour == hour
     assert parsed_date.minute == minute
     assert parsed_date.second == second
+
 
 def test_that_standard_datetime_string_is_parsed_correctly():
     date_string = "2013-11-05 18:11:00"
@@ -58,12 +60,14 @@ def test_that_standard_datetime_string_is_parsed_correctly():
     assert parsed_date.minute == minute
     assert parsed_date.second == second
 
+
 def test_that_non_date_string_is_not_converted_to_date():
     date_string = "123"
     parsed_date, key, is_date = Batlog2Csv.parse_date(date_string)
 
     assert not parsed_date
     assert not is_date
+
 
 def test_that_none_value_is_not_converted_to_date():
     date_string = None

@@ -35,7 +35,6 @@ class Batlog2Csv:
         number_of_columns = 0
 
         for lineNumber, line in enumerate(self.dataLines):
-            value = None
             is_date = False
 
             # Get the key
@@ -151,4 +150,5 @@ def main():
     print batlog2csv.convert()
 
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
