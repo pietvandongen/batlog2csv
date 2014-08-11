@@ -10,7 +10,7 @@ def test_that_standard_date_is_parsed_correctly():
     minute = 29
     second = 0
 
-    parsed_date, key, is_date = Batlog2Csv.parse_date(date_string)
+    key, parsed_date, is_date = Batlog2Csv.parse_date(date_string)
 
     assert is_date
     assert parsed_date.year == year
@@ -30,7 +30,7 @@ def test_that_date_with_timezone_as_last_part_is_parsed_correctly():
     minute = 47
     second = 2
 
-    parsed_date, key, is_date = Batlog2Csv.parse_date(date_string)
+    key, parsed_date, is_date = Batlog2Csv.parse_date(date_string)
 
     assert is_date
     assert parsed_date.year == year
@@ -50,7 +50,7 @@ def test_that_standard_datetime_string_is_parsed_correctly():
     minute = 11
     second = 0
 
-    parsed_date, key, is_date = Batlog2Csv.parse_date(date_string)
+    key, parsed_date, is_date = Batlog2Csv.parse_date(date_string)
 
     assert is_date
     assert parsed_date.year == year
@@ -63,7 +63,7 @@ def test_that_standard_datetime_string_is_parsed_correctly():
 
 def test_that_non_date_string_is_not_converted_to_date():
     date_string = "123"
-    parsed_date, key, is_date = Batlog2Csv.parse_date(date_string)
+    key, parsed_date, is_date = Batlog2Csv.parse_date(date_string)
 
     assert not parsed_date
     assert not is_date
@@ -71,7 +71,7 @@ def test_that_non_date_string_is_not_converted_to_date():
 
 def test_that_none_value_is_not_converted_to_date():
     date_string = None
-    parsed_date, key, is_date = Batlog2Csv.parse_date(date_string)
+    key, parsed_date, is_date = Batlog2Csv.parse_date(date_string)
 
     assert not parsed_date
     assert not is_date

@@ -35,30 +35,20 @@ class Batlog2Csv:
         number_of_columns = 0
 
         for lineNumber, line in enumerate(self.dataLines):
-            is_date = False
-
-            # Get the key
-            key = line[line.find(self.INPUT_KEY_DELIMITER) + len(self.INPUT_KEY_DELIMITER):line.find(
-                self.INPUT_VALUE_DELIMITER)]
-
-            # Add the value if key column name
-            if key in self.DESIRED_COLUMNS:
-                value = line[line.find(self.INPUT_VALUE_DELIMITER) + len(self.INPUT_VALUE_DELIMITER):]
-
-            # Try to get a date if key is no column name
-            else:
-                value, key, is_date = self.parse_date(line)
+            key, value, is_date = self.get_key_value_and_date(line)
 
             # Add value to row
             if value:
-                # New row
-                if is_date and row:
+                is_new_row = is_date and row
+                do_append_key = rowcount == 0
+
+                if is_new_row:
                     # Print header
                     if rowcount == 0:
                         number_of_columns = len(header)
                         csv += self.OUTPUT_VALUE_DELIMITER.join(header) + "\n"
 
-                    # Print row if it has the correct number of columns
+                    # Append row if it has correct number of columns
                     if len(row) == number_of_columns:
                         csv += self.OUTPUT_VALUE_DELIMITER.join(row) + "\n"
 
@@ -67,28 +57,36 @@ class Batlog2Csv:
                     rowcount += 1
                     column_count = 0
 
-                # Append column name to header
-                if rowcount == 0:
+                if do_append_key:
                     header.append(key)
-
-                # Convert value
-                if key == self.EXTERNAL_CONNECTED_KEY:
-                    if value == "Yes":
-                        value = "true"
-                    else:
-                        value = "false"
 
                 # Append value to row
                 if column_count < len(header) and key == header[column_count]:
-                    row.append(str(value))
+                    row.append(str(self.get_converted_value(key, value)))
 
                 column_count += 1
 
-        # Add the last row
-        if len(row) == number_of_columns:
-            csv += self.OUTPUT_VALUE_DELIMITER.join(row) + "\n"
+        # Return CSV, including the last row
+        return csv + self.OUTPUT_VALUE_DELIMITER.join(row) + "\n"
 
-        return csv
+    @staticmethod
+    def get_key_value_and_date(line):
+        is_date = False
+        key = Batlog2Csv.get_key(line)
+
+        if key in Batlog2Csv.DESIRED_COLUMNS:
+            value = line[line.find(Batlog2Csv.INPUT_VALUE_DELIMITER) + len(Batlog2Csv.INPUT_VALUE_DELIMITER):]
+        else:
+            key, value, is_date = Batlog2Csv.parse_date(line)
+
+        return key, value, is_date
+
+    @staticmethod
+    def get_key(line):
+        return line[
+            line.find(Batlog2Csv.INPUT_KEY_DELIMITER) + len(Batlog2Csv.INPUT_KEY_DELIMITER):
+            line.find(Batlog2Csv.INPUT_VALUE_DELIMITER)
+        ]
 
     @staticmethod
     def parse_date(string):
@@ -127,7 +125,17 @@ class Batlog2Csv:
             key = Batlog2Csv.DATE_KEY
             is_date = True
 
-        return value, key, is_date
+        return key, value, is_date
+
+    @staticmethod
+    def get_converted_value(key, value):
+        if key == Batlog2Csv.EXTERNAL_CONNECTED_KEY:
+            if value == "Yes":
+                return "true"
+            else:
+                return "false"
+
+        return value
 
 
 def main():
