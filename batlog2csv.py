@@ -121,6 +121,15 @@ class Batlog2Csv:
         except:
             pass
 
+        # For dates like "Sun Mar 29 10:28:00 EEST 2015"
+        try:
+            value = datetime.datetime.strptime(
+                string[:20] + string[24:],
+                "%a %b %d %H:%M:%S %Y"
+            )
+        except:
+            pass
+
         if value:
             key = Batlog2Csv.DATE_KEY
             is_date = True
