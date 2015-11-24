@@ -1,4 +1,5 @@
 language: python
+sudo: false # Use container-based infrastructure
 python:
   - "2.7"
 install:
