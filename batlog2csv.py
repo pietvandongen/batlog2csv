@@ -151,7 +151,7 @@ def main():
     try:
         input_file_name = str(sys.argv[1])
     except IndexError:
-        print "Error: please provide an input file name"
+        print("Error: please provide an input file name")
         sys.exit(2)
 
     try:
@@ -159,12 +159,12 @@ def main():
         date_lines = input_file.read().splitlines()
         input_file.close()
     except IOError:
-        print "The input file does not exist"
+        print("The input file does not exist")
         sys.exit(2)
 
     batlog2csv = Batlog2Csv(date_lines)
 
-    print batlog2csv.convert()
+    print(batlog2csv.convert())
 
 
 if __name__ == "__main__":
