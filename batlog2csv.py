@@ -31,7 +31,7 @@ class Batlog2Csv:
         rowcount = 0
         column_count = 0
         header = []
-        row = []
+        row = {}
         number_of_columns = 0
 
         for lineNumber, line in enumerate(self.dataLines):
@@ -40,7 +40,6 @@ class Batlog2Csv:
             # Add value to row
             if value:
                 is_new_row = is_date and row
-                do_append_key = rowcount == 0
 
                 if is_new_row:
                     # Print header
@@ -50,24 +49,25 @@ class Batlog2Csv:
 
                     # Append row if it has correct number of columns
                     if len(row) == number_of_columns:
-                        csv += self.OUTPUT_VALUE_DELIMITER.join(row) + "\n"
+                        csv += self.OUTPUT_VALUE_DELIMITER.join((row[key] for key in header if key in row)) + "\n"
 
                     # Start a new row
-                    row = []
+                    row = {}
                     rowcount += 1
                     column_count = 0
 
+                do_append_key = rowcount == 0
                 if do_append_key:
                     header.append(key)
 
                 # Append value to row
-                if column_count < len(header) and key == header[column_count]:
-                    row.append(str(self.get_converted_value(key, value)))
+                if column_count < len(header) and key in header:
+                    row[key] = str(self.get_converted_value(key, value))
 
                 column_count += 1
 
         # Return CSV, including the last row
-        return csv + self.OUTPUT_VALUE_DELIMITER.join(row) + "\n"
+        return csv + self.OUTPUT_VALUE_DELIMITER.join((row[key] for key in header if key in row)) + "\n"
 
     @staticmethod
     def get_key_value_and_date(line):
@@ -151,7 +151,7 @@ def main():
     try:
         input_file_name = str(sys.argv[1])
     except IndexError:
-        print "Error: please provide an input file name"
+        print("Error: please provide an input file name")
         sys.exit(2)
 
     try:
@@ -159,12 +159,12 @@ def main():
         date_lines = input_file.read().splitlines()
         input_file.close()
     except IOError:
-        print "The input file does not exist"
+        print("The input file does not exist")
         sys.exit(2)
 
     batlog2csv = Batlog2Csv(date_lines)
 
-    print batlog2csv.convert()
+    print(batlog2csv.convert())
 
 
 if __name__ == "__main__":
